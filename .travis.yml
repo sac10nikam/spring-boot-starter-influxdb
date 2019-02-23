@@ -1,0 +1,22 @@
+language: java
+jdk:
+ - openjdk11
+services:
+  - docker
+before_cache:
+  - "rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock"
+  - "rm -fr $HOME/.gradle/caches/*/plugin-resolution/"
+cache:
+  directories:
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
+script:
+  - "./gradlew -Dorg.gradle.project.version=$TRAVIS_TAG jar"
+deploy:
+  provider: releases
+  api_key: $GITLAB_API_TOKEN
+  file_glob: true
+  file: ./build/libs/*
+  skip_cleanup: true
+  on:
+    tags: true
